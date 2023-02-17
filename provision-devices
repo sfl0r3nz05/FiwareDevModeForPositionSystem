@@ -1,0 +1,41 @@
+#!/bin/bash
+#
+#  curl commands to reload the data from the previous tutorial
+#
+#
+
+set -e
+
+printf "⏳ Provisioning IoT devices "
+
+
+#
+# Create a service groups for all UltraLight IoT devices
+#
+
+curl -s -o /dev/null -X POST \
+  "http://iot-agent:$IOTA_NORTH_PORT/iot/devices" \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+  "devices": [
+    {
+      "device_id": "tag001",
+      "entity_name": "urn:ngsi-ld:Tag:001",
+      "entity_type": "Tag",
+      "protocol": "PDI-IoTA-UltraLight",
+      "transport": "MQTT",
+      "timezone": "Europe/Madrid",
+      "static_attributes": [
+        {
+          "name": "refStore",
+          "type": "Relationship",
+          "value": "urn:ngsi-ld:Store:001"
+        }
+      ]
+    }
+  ]
+}'
+
+echo -e " \033[1;32mdone\033[0m"

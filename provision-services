@@ -1,0 +1,135 @@
+#!/bin/bash
+#
+#  curl commands to reload the data from the previous tutorial
+#
+#
+
+set -e
+
+printf "⏳ Provisioning IoT services "
+
+
+#
+# Create a service groups for all UltraLight IoT devices
+#
+
+curl -s -o /dev/null -X POST \
+  "http://iot-agent:$IOTA_NORTH_PORT/iot/services" \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+    "services": [
+        {
+            "apikey": "5jggokgpepnvsb2uv4s40d59ov",
+            "cbroker":     "'"http://orion:$ORION_PORT"'",
+            "entity_type": "Tag",
+            "transport": "MQTT",
+            "resource": "",
+            "attributes": [
+              {
+                    "object_id": "ID_mensaje",
+                    "name": "ID_mensaje",
+                    "type": "STRING",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Text",
+                            "value": "ID_mensaje"
+                        }
+                    }
+                },
+                {
+                    "object_id": "timestamp",
+                    "name": "timestamp",
+                    "type": "DATE",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Text",
+                            "value": "timestamp"
+                        }
+                    }
+                },
+                {
+                    "object_id": "tagID",
+                    "name": "tagID",
+                    "type": "STRING",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Text",
+                            "value": "tagID"
+                        }
+                    }
+                },
+                {
+                    "object_id": "x",
+                    "name": "x",
+                    "type": "STRING",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Text",
+                            "value": "metadata_for_X_position"
+                        }
+                    }
+                },
+                {
+                    "object_id": "y",
+                    "name": "y",
+                    "type": "STRING",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Text",
+                            "value": "metadata_for_Y_position"
+                        }
+                    }
+                },
+                {
+                    "object_id": "z",
+                    "name": "z",
+                    "type": "STRING",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Text",
+                            "value": "metadata_for_Z_position"
+                        }
+                    }
+                },
+                {
+                    "object_id": "hpl_1",
+                    "name": "hpl_1",
+                    "type": "STRING",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Text",
+                            "value": "metadata_for_hpl"
+                        }
+                    }
+                },
+                {
+                    "object_id": "vpl",
+                    "name": "vpl",
+                    "type": "STRING",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Text",
+                            "value": "metadata_for_vpl"
+                        }
+                    }
+                },
+                {
+                    "object_id": "SingularMatrix",
+                    "name": "SingularMatrix",
+                    "type": "STRING",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Text",
+                            "value": "metadata_for_singularMatrix"
+                        }
+                    }
+                }
+
+            ]
+        }
+    ]
+}'
+
+echo -e " \033[1;32mdone\033[0m"
