@@ -4,8 +4,9 @@ This is project is an ad-hoc implementation for sending positioning data using t
 
 ## Architecture
 
-![Architecture](https://user-images.githubusercontent.com/6643905/219711520-6ea0189f-8129-4faf-923e-5dd348be2e1a.png)
+![Architecture](https://user-images.githubusercontent.com/6643905/219717119-4f06be5c-e4bc-4eb4-801a-c4c7ec555131.png)
 
 ## How to use
 
 1. [Prerequsites](./documentation/Prerequsites.md) [Required].
+2. [How to deploy the Fiware environment](./documentation/HowToUse.md) [Required].
