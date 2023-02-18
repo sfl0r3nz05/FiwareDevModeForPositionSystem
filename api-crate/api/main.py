@@ -73,25 +73,13 @@ class CrateResource(Resource):
         return self.error('Argument "{}" is required'.format(argument), 400)
 
 
-class GetAgvResource(CrateResource):
+class GetTagResource(CrateResource):
 
-    __name__ = 'GetAgvList'
+    __name__ = 'GetTagList'
     __table__ = 'mtopeniot.etagv'
 
 
-class GetRobotArmResource(CrateResource):
-
-    __name__ = 'GetRobotArmList'
-    __table__ = 'mtopeniot.etrobotarm'
-
-
-class GetPlcResource(CrateResource):
-
-    __name__ = 'GetPlcList'
-    __table__ = 'mtopeniot.etplc'
-
-
-class GetAgvList(GetAgvResource):
+class GetTagList(GetTagResource):
     """
     Resource for mtopeniot.etagv
     Supported methods: GET
@@ -100,43 +88,7 @@ class GetAgvList(GetAgvResource):
     def get(self):
         id = str(uuid.uuid1())
 
-        self.cursor.execute("SELECT * FROM mtopeniot.etagv")
-        response = self.convert(self.cursor.description,
-                                self.cursor.fetchall())
-        if self.cursor.rowcount > 0:
-            return response, 200
-        else:
-            return self.not_found(id=id)
-
-
-class GetRobotArmList(GetRobotArmResource):
-    """
-    Resource for mtopeniot.etrobotarm
-    Supported methods: GET
-    """
-
-    def get(self):
-        id = str(uuid.uuid1())
-
-        self.cursor.execute("SELECT * FROM mtopeniot.etrobotarm")
-        response = self.convert(self.cursor.description,
-                                self.cursor.fetchall())
-        if self.cursor.rowcount > 0:
-            return response, 200
-        else:
-            return self.not_found(id=id)
-
-
-class GetPlcList(GetPlcResource):
-    """
-    Resource for mtopeniot.etplc
-    Supported methods: GET
-    """
-
-    def get(self):
-        id = str(uuid.uuid1())
-
-        self.cursor.execute("SELECT * FROM mtopeniot.etplc")
+        self.cursor.execute("SELECT id_mensaje, timestamp, tagid, x, y, z, hpl_1, vpl, singularmatrix FROM mtopeniot.ettag")
         response = self.convert(self.cursor.description,
                                 self.cursor.fetchall())
         if self.cursor.rowcount > 0:
@@ -151,9 +103,7 @@ def not_found(error):
 
 def run():
     api = Api(app)
-    api.add_resource(GetAgvList, '/getAgvs')
-    api.add_resource(GetRobotArmList, '/getRobotArms')
-    api.add_resource(GetPlcList, '/getPlcs')
+    api.add_resource(GetTagList, '/getTags')
     app.run(host='0.0.0.0', port=8080, debug=True, ssl_context='adhoc')
 
 if __name__ == '__main__':
