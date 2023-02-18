@@ -76,19 +76,19 @@ class CrateResource(Resource):
 class GetTagResource(CrateResource):
 
     __name__ = 'GetTagList'
-    __table__ = 'mtopeniot.etagv'
+    __table__ = 'mtopeniot.ettag'
 
 
 class GetTagList(GetTagResource):
     """
-    Resource for mtopeniot.etagv
+    Resource for mtopeniot.ettag
     Supported methods: GET
     """
 
     def get(self):
         id = str(uuid.uuid1())
 
-        self.cursor.execute("SELECT id_mensaje, timestamp, tagid, x, y, z, hpl_1, vpl, singularmatrix FROM mtopeniot.ettag")
+        self.cursor.execute("SELECT * FROM mtopeniot.ettag")
         response = self.convert(self.cursor.description,
                                 self.cursor.fetchall())
         if self.cursor.rowcount > 0:
@@ -104,7 +104,7 @@ def not_found(error):
 def run():
     api = Api(app)
     api.add_resource(GetTagList, '/getTags')
-    app.run(host='0.0.0.0', port=8080, debug=True, ssl_context='adhoc')
+    app.run(host='0.0.0.0', port=8080, debug=True) #, ssl_context='adhoc'
 
 if __name__ == '__main__':
     run()

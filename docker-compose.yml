@@ -158,7 +158,7 @@ services:
     container_name: api-crate
     #image: sflorenz05/api-python-cratedb:v0.1
     build:
-      context: .
+      context: api-crate/.
     depends_on:
         - crate-db
     environment:

@@ -4,9 +4,13 @@
       "description": "This is a REST API for the NONDAGO-GEOGRAMA project",
       "title": "NONDAGO-GEOGRAMA API REST",
       "contact": {
-        "email": ""
+        "email": "sfigueroa@ceit.es"
       }
     },
+    "schemes": [
+      "http",
+      "https"
+    ],
     "servers": [
       {
         "url": "http://172.31.26.62:8080"
@@ -18,10 +22,6 @@
         "name": "CrateDB",
         "description": "Tag created to test the API Crate that query CrateDB Timeserie Database."
       }
-    ],
-    "schemes": [
-      "http",
-      "https"
     ],
     "paths": {
       "/getTags": {
@@ -47,7 +47,8 @@
             }
           }
         }
-      },
+      }
+    },
     "definitions": {
     }    
-  }  
+  } 
