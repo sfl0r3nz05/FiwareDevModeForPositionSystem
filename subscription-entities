@@ -1,0 +1,63 @@
+#!/bin/bash
+#
+#  curl commands to reload the data from the previous tutorial
+#
+#
+
+set -e
+
+printf "⏳ Loading QuantumLeap data "
+
+#
+# Create four Store Entities in various locations across Berlin
+#
+# Agv
+curl -s -o /dev/null -X POST \
+  'http://orion:'$ORION_PORT'/v2/subscriptions/' \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+    "description": "Notify QuantumLeap on Agv changes on any update",
+    "subject": {
+      "entities": [
+        {
+          "idPattern": "urn:ngsi-ld:Tag:001"
+        }
+      ],
+      "condition": {
+        "attrs": [
+          "ID_mensaje",
+          "timestamp",
+          "tagID",
+          "x",
+          "y",
+          "z",
+          "hpl_1",
+          "vpl",
+          "SingularMatrix"
+        ]
+      }
+    },
+    "notification": {
+      "http": {"url": "http://quantumleap:'$QUANTUMLEAP_PORT'/v2/notify"},
+      "attrs": [
+        "ID_mensaje",
+        "timestamp",
+        "tagID",
+        "x",
+        "y",
+        "z",
+        "hpl_1",
+        "vpl",
+        "SingularMatrix"
+      ],
+      "metadata": [
+        "dateCreated",
+        "dateModified"
+      ]
+    },
+    "throttling": 1
+  }'
+
+echo -e " \033[1;32mdone\033[0m"

@@ -46,6 +46,11 @@ loadData () {
 		-e ORION_PORT="${ORION_PORT}" \
 		-e IOTA_NORTH_PORT="${IOTA_NORTH_PORT}" \
 		--entrypoint /bin/ash curlimages/curl provision-devices
+	docker run --rm -v $(pwd)/subscription-entities:/subscription-entities \
+		--network fiware_default \
+		-e ORION_PORT="${ORION_PORT}" \
+		-e QUANTUMLEAP_PORT="${QUANTUMLEAP_PORT}" \
+		--entrypoint /bin/ash curlimages/curl subscription-entities
 	echo ""
 }
 

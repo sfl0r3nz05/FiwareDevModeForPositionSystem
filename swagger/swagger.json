@@ -1,0 +1,170 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "description": "This is a REST API for the IC2M2 project",
+      "title": "IC2M2 Api REST",
+      "contact": {
+        "email": ""
+      }
+    },
+    "servers": [
+      {
+        "url": "http://172.31.26.62:8080"
+      },
+      {
+        "url": "http://172.31.26.62:8090"
+      }
+    ],
+    "basePath": "/",
+    "tags": [
+      {
+        "name": "CrateDB",
+        "description": "Tag created to test the API Crate that query CrateDB Timeserie Database."
+      },
+      {
+        "name": "Orion",
+        "description": "Tag created to send a command in the South Bound direction through the Orion Context Broker."
+      }
+    ],
+    "schemes": [
+      "http",
+      "https"
+    ],
+    "paths": {
+      "/getAgvs": {
+        "get": {
+          "tags": [
+            "CrateDB"
+          ],
+          "summary": "Search all the AGVs",
+          "description": "All the operations related to the Agv List.",
+          "operationId": "getAgvs",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "201": {
+              "description": "Success"
+            },
+            "401": {
+              "description": "Acceso denegado"
+            },
+            "404": {
+              "description": "service not available"
+            }
+          }
+        }
+      },
+      "/getRobotArms": {
+        "get": {
+          "tags": [
+            "CrateDB"
+          ],
+          "summary": "Search all the Robot Arm",
+          "description": "All the operations related to the Robot Arm List.",
+          "operationId": "getRobotArms",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "401": {
+              "description": "Acceso denegado"
+            },
+            "404": {
+              "description": "service not available"
+            }
+          }
+        }
+      },
+      "/getPlcs": {
+        "get": {
+          "tags": [
+            "CrateDB"
+          ],
+          "summary": "Search all the PLCs",
+          "description": "All the operations related to the PLC List.",
+          "operationId": "getPlcs",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "401": {
+              "description": "Acceso denegado"
+            },
+            "404": {
+              "description": "service not available"
+            }
+          }
+        }
+      },
+      "/PostAgvCmd/{id}": {
+        "post": {
+          "tags": [
+            "Orion"
+          ],
+          "summary": "Search all the AGVs",
+          "description": "Endpoint created to send a command in the South Bound direction through the Orion Context Broker.",
+          "operationId": "PostAgvCmd",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Device ID.",
+              "required": true,
+              "allowReserved": true,
+              "schema": {
+                "type": "string",
+                "default": "urn:ngsi-ld:Agv:001"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "Pet to add to the store",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    [
+                      "AGV_Event",
+                      "type",
+                      "value"
+                    ]
+                  ],
+                  "properties": {
+                    "AGV_Event": {
+                      "type": "object",
+                      "default": {
+                        "type" : "commandResult",
+                        "value": "152"
+                    }
+                  }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Success"
+            },
+            "401": {
+              "description": "Acceso denegado"
+            },
+            "404": {
+              "description": "service not available"
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+    }    
+  }  

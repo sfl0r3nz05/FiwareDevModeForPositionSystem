@@ -2,7 +2,6 @@ version: "3.8"
 
 services:
 
-  # MQTT broker
   mosquitto:
     image: eclipse-mosquitto:1.6.14
     hostname: mosquitto
@@ -19,7 +18,6 @@ services:
     networks:
       - default
 
-  # IoT-Agent JSON
   iot-agent:
     image: fiware/iotagent-json:${IOT_AGENT_JSON_VERSION}
     hostname: iot-agent
@@ -58,7 +56,6 @@ services:
     healthcheck:
       interval: 5s
 
-  # Database FIWARE
   mongo-db:
     image: mongo:${MONGO_DB_VERSION}
     hostname: mongo-db
@@ -67,7 +64,7 @@ services:
     expose:
       - "${MONGO_DB_PORT}"
     ports:
-      - "${MONGO_DB_PORT}:${MONGO_DB_PORT}" # localhost:27017
+      - "${MONGO_DB_PORT}:${MONGO_DB_PORT}"
     networks:
       - default
     volumes:
@@ -103,11 +100,86 @@ services:
     expose:
       - "${ORION_PORT}"
     ports:
-      - "${ORION_PORT}:${ORION_PORT}" # localhost:1026
+      - "${ORION_PORT}:${ORION_PORT}"
     command: -dbhost mongo-db -logLevel DEBUG
     healthcheck:
       test: curl --fail -s http://orion:${ORION_PORT}/version || exit 1
       interval: 5s
+
+  quantumleap:
+    image: orchestracities/quantumleap:${QUANTUMLEAP_VERSION}
+    hostname: quantumleap
+    restart: always
+    container_name: fiware-quantumleap
+    ports:
+      - "${QUANTUMLEAP_PORT}:${QUANTUMLEAP_PORT}"
+    depends_on:
+      - crate-db
+    # - redis-db
+    environment:
+      - CRATE_HOST=crate-db
+    # - REDIS_HOST=redis-db
+    # - REDIS_PORT=${REDIS_PORT}
+      - LOGLEVEL=DEBUG
+    healthcheck:
+      test: curl --fail -s http://quantumleap:${QUANTUMLEAP_PORT}/version || exit 1
+
+  crate-db:
+    image: crate:5.1.0
+    hostname: crate-db
+    container_name: db-crate
+    restart: always
+    ports:
+        - "4200:4200" #admin UI
+        - "4300:4300" #Transport protocol
+    command: crate -Cauth.host_based.enabled=false -Ccluster.name=democluster -Chttp.cors.enabled=true -Chttp.cors.allow-origin="*"
+    environment:
+        - CRATE_HEAP_SIZE=2g
+    volumes:
+      - crate-db:/data
+    networks:
+      - default
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: always
+    depends_on:
+        - crate-db
+    ports:
+        - "3003:3000"
+    volumes:
+      - grafana:/var/lib/grafana
+    networks:
+      - default
+
+  api-crate:
+    hostname: api-crate
+    container_name: api-crate
+    image: sflorenz05/api-python-cratedb:v0.1
+    depends_on:
+        - crate-db
+    environment:
+      - CRATE_HOST_PORT=crate-db:4200
+    ports:
+      - "8080:8080"
+    networks:
+      - default
+
+  swagger:
+    hostname: swagger
+    container_name: swagger
+    image: swaggerapi/swagger-ui:v4.6.1
+    restart: always
+    ports:
+      - 8081:8080
+    environment:
+     SWAGGER_JSON: /home/swagger.json
+     LAYOUT: "BaseLayout" 
+    volumes:
+      - ./swagger/swagger.json:/home/swagger.json
+    networks:
+      - default
 
 networks:
   default:
@@ -117,7 +189,6 @@ networks:
       config:
         - subnet: 172.18.1.0/24
 
-#These volumes persist even if a container is restarted or deleted, they are accessible by other containers. On the left the unique value of a volume on a host machine, on the right the path in the container.
 volumes:
   mongo-db: ~ 
   crate-db: ~
