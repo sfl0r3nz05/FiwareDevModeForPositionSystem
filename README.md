@@ -12,5 +12,12 @@ This is project is an ad-hoc implementation for sending positioning data using t
 2. [How to deploy the Fiware environment](./documentation/HowToUse.md) [Required].
 
    ### Demonstration
-   - [Video demonstration of sending data from the SDG to an information flow formed by the Publisher Agent MQTT and Fiware](https://youtu.be/lwRACg6GNws)
 
+   - [Demonstration of sending data to the next information flow: SDG -> Publisher Agent MQTT -> Fiware](https://youtu.be/lwRACg6GNws)
+
+## To Do
+
+1. Create an unsecure branch
+2. Create a secure branch
+3. Create more endpoints for the API
+4. Create a production repository based on Kubernetes
