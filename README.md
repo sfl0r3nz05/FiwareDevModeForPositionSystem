@@ -10,3 +10,7 @@ This is project is an ad-hoc implementation for sending positioning data using t
 
 1. [Prerequsites](./documentation/Prerequsites.md) [Required].
 2. [How to deploy the Fiware environment](./documentation/HowToUse.md) [Required].
+
+   ### Demonstration
+   - [Video demonstration of sending data from the SDG to an information flow formed by the Publisher Agent MQTT and Fiware](https://youtu.be/lwRACg6GNws)
+
