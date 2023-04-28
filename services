@@ -157,7 +157,9 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over MQTT"
 		echo ""
-		${dockerCmd} up -d --remove-orphans
+		cd ./Publisher-Agent && ${dockerCmd} up -d && cd ..
+		cd ./CSV-Data-Sender && ${dockerCmd} up -d && cd ..
+		${dockerCmd} up -d
 		loadData
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
@@ -170,7 +172,8 @@ case "${command}" in
 		export $(cat .env | grep "#" -v)
 		echo "Pulling Docker images"
 		docker pull curlimages/curl
-		${dockerCmd} pull 
+		${dockerCmd} pull
+		git submodule update --init --recursive
 		;;
 	*)
 		echo "Command not Found."

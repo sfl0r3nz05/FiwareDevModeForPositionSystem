@@ -15,8 +15,6 @@ services:
       - "9001:9001"
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
-    networks:
-      - default
 
   iot-agent:
     image: fiware/iotagent-json:${IOT_AGENT_JSON_VERSION}
@@ -26,8 +24,6 @@ services:
     depends_on:
       - mongo-db
       - mosquitto
-    networks:
-      - default
     expose:
       - "${IOTA_NORTH_PORT}"
       - "${IOTA_SOUTH_PORT}"
@@ -65,8 +61,6 @@ services:
       - "${MONGO_DB_PORT}"
     ports:
       - "${MONGO_DB_PORT}:${MONGO_DB_PORT}"
-    networks:
-      - default
     volumes:
       - mongo-db:/data
     healthcheck:
@@ -85,8 +79,6 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://mongo-db:27017"
     depends_on:
       - mongo-db
-    networks:
-      - default
 
   orion:
     image: fiware/orion:${ORION_VERSION}
@@ -95,8 +87,6 @@ services:
     restart: always
     depends_on:
       - mongo-db
-    networks:
-      - default
     expose:
       - "${ORION_PORT}"
     ports:
@@ -115,11 +105,8 @@ services:
       - "${QUANTUMLEAP_PORT}:${QUANTUMLEAP_PORT}"
     depends_on:
       - crate-db
-    # - redis-db
     environment:
       - CRATE_HOST=crate-db
-    # - REDIS_HOST=redis-db
-    # - REDIS_PORT=${REDIS_PORT}
       - LOGLEVEL=DEBUG
     healthcheck:
       test: curl --fail -s http://quantumleap:${QUANTUMLEAP_PORT}/version || exit 1
@@ -137,21 +124,6 @@ services:
         - CRATE_HEAP_SIZE=2g
     volumes:
       - crate-db:/data
-    networks:
-      - default
-
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    restart: always
-    depends_on:
-        - crate-db
-    ports:
-        - "3003:3000"
-    volumes:
-      - grafana:/var/lib/grafana
-    networks:
-      - default
 
   api-crate:
     hostname: api-crate
@@ -165,8 +137,6 @@ services:
       - CRATE_HOST_PORT=crate-db:4200
     ports:
       - "8080:8080"
-    networks:
-      - default
 
   swagger:
     hostname: swagger
@@ -180,16 +150,6 @@ services:
      LAYOUT: "BaseLayout" 
     volumes:
       - ./swagger/swagger.json:/home/swagger.json
-    networks:
-      - default
-
-networks:
-  default:
-    labels:
-      org.fiware: 'tutorial'
-    ipam:
-      config:
-        - subnet: 172.18.1.0/24
 
 volumes:
   mongo-db: ~ 
