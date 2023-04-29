@@ -30,7 +30,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "ID_mensaje",
                     "name": "ID_mensaje",
-                    "type": "INT",
+                    "type": "Integer",
                     "metadata": {
                         "unitCode": {
                             "type": "text",
@@ -41,7 +41,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "timestamp",
                     "name": "timestamp",
-                    "type": "DATE",
+                    "type": "Text",
                     "metadata": {
                         "unitCode": {
                             "type": "text",
@@ -52,7 +52,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "tagID",
                     "name": "tagID",
-                    "type": "STRING",
+                    "type": "Text",
                     "metadata": {
                         "unitCode": {
                             "type": "Text",
@@ -63,7 +63,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "x",
                     "name": "x",
-                    "type": "REAL",
+                    "type": "Number",
                     "metadata": {
                         "unitCode": {
                             "type": "Text",
@@ -74,7 +74,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "y",
                     "name": "y",
-                    "type": "REAL",
+                    "type": "Number",
                     "metadata": {
                         "unitCode": {
                             "type": "Text",
@@ -85,7 +85,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "z",
                     "name": "z",
-                    "type": "REAL",
+                    "type": "Number",
                     "metadata": {
                         "unitCode": {
                             "type": "Text",
@@ -96,7 +96,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "hpl_1",
                     "name": "hpl_1",
-                    "type": "REAL",
+                    "type": "Number",
                     "metadata": {
                         "unitCode": {
                             "type": "Text",
@@ -107,7 +107,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "vpl",
                     "name": "vpl",
-                    "type": "REAL",
+                    "type": "Number",
                     "metadata": {
                         "unitCode": {
                             "type": "Text",
@@ -118,11 +118,22 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "SingularMatrix",
                     "name": "SingularMatrix",
-                    "type": "INT",
+                    "type": "Integer",
                     "metadata": {
                         "unitCode": {
                             "type": "Text",
                             "value": "metadata_for_singularMatrix"
+                        }
+                    }
+                },
+                {
+                    "object_id": "AlarmType",
+                    "name": "AlarmType",
+                    "type": "Integer",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Text",
+                            "value": "metadata_for_alarmType"
                         }
                     }
                 }               

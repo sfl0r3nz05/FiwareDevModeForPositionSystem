@@ -141,8 +141,8 @@ waitForIoTAgent () {
 }
 
 wait () {
-	echo -e "\n⏳ Waiting for 3 seconds\n"
-	sleep 5
+	echo -e "\n⏳ Waiting for 7 seconds\n"
+	sleep 7
 }
 
 command="$1"

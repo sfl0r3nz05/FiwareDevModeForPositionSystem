@@ -26,12 +26,12 @@ curl -s -o /dev/null -X POST \
         }
       ],
       "condition": {
-        "attrs": [ "ID_mensaje", "timestamp", "tagID", "x", "y", "z", "hpl_1", "vpl", "SingularMatrix" ]
+        "attrs": [ "ID_mensaje", "timestamp", "tagID", "x", "y", "z", "hpl_1", "vpl", "SingularMatrix", "AlarmType" ]
       }
     },
     "notification": {
       "http": {"url": "http://quantumleap:'$QUANTUMLEAP_PORT'/v2/notify"},
-      "attrs": [ "ID_mensaje", "timestamp", "tagID", "x", "y", "z", "hpl_1", "vpl", "SingularMatrix" ],
+      "attrs": [ "ID_mensaje", "timestamp", "tagID", "x", "y", "z", "hpl_1", "vpl", "SingularMatrix", "AlarmType" ],
       "metadata": [
         "dateCreated",
         "dateModified"
