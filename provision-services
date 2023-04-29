@@ -27,14 +27,14 @@ curl -s -o /dev/null -X POST \
             "transport": "MQTT",
             "resource": "",
             "attributes": [
-              {
+                {
                     "object_id": "ID_mensaje",
                     "name": "ID_mensaje",
-                    "type": "STRING",
+                    "type": "INT",
                     "metadata": {
                         "unitCode": {
-                            "type": "Text",
-                            "value": "ID_mensaje"
+                            "type": "text",
+                            "value": "text"
                         }
                     }
                 },
@@ -44,7 +44,7 @@ curl -s -o /dev/null -X POST \
                     "type": "DATE",
                     "metadata": {
                         "unitCode": {
-                            "type": "Text",
+                            "type": "text",
                             "value": "timestamp"
                         }
                     }
@@ -63,7 +63,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "x",
                     "name": "x",
-                    "type": "STRING",
+                    "type": "REAL",
                     "metadata": {
                         "unitCode": {
                             "type": "Text",
@@ -74,7 +74,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "y",
                     "name": "y",
-                    "type": "STRING",
+                    "type": "REAL",
                     "metadata": {
                         "unitCode": {
                             "type": "Text",
@@ -85,7 +85,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "z",
                     "name": "z",
-                    "type": "STRING",
+                    "type": "REAL",
                     "metadata": {
                         "unitCode": {
                             "type": "Text",
@@ -96,7 +96,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "hpl_1",
                     "name": "hpl_1",
-                    "type": "STRING",
+                    "type": "REAL",
                     "metadata": {
                         "unitCode": {
                             "type": "Text",
@@ -107,7 +107,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "vpl",
                     "name": "vpl",
-                    "type": "STRING",
+                    "type": "REAL",
                     "metadata": {
                         "unitCode": {
                             "type": "Text",
@@ -118,15 +118,14 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "SingularMatrix",
                     "name": "SingularMatrix",
-                    "type": "STRING",
+                    "type": "INT",
                     "metadata": {
                         "unitCode": {
                             "type": "Text",
                             "value": "metadata_for_singularMatrix"
                         }
                     }
-                }
-
+                }               
             ]
         }
     ]

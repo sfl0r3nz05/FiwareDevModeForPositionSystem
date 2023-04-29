@@ -19,7 +19,7 @@ services:
   iot-agent:
     image: fiware/iotagent-json:${IOT_AGENT_JSON_VERSION}
     hostname: iot-agent
-    container_name: fiware-iot-agent
+    container_name: iot-agent
     restart: always
     depends_on:
       - mongo-db
@@ -83,7 +83,7 @@ services:
   orion:
     image: fiware/orion:${ORION_VERSION}
     hostname: orion
-    container_name: fiware-orion
+    container_name: orion
     restart: always
     depends_on:
       - mongo-db
@@ -100,7 +100,7 @@ services:
     image: orchestracities/quantumleap:${QUANTUMLEAP_VERSION}
     hostname: quantumleap
     restart: always
-    container_name: fiware-quantumleap
+    container_name: quantumleap
     ports:
       - "${QUANTUMLEAP_PORT}:${QUANTUMLEAP_PORT}"
     depends_on:
@@ -114,7 +114,7 @@ services:
   crate-db:
     image: crate:5.1.0
     hostname: crate-db
-    container_name: db-crate
+    container_name: crate-db
     restart: always
     ports:
         - "4200:4200" #admin UI

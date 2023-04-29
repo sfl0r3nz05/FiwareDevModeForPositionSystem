@@ -9,7 +9,7 @@ This is project is an ad-hoc implementation for sending positioning data using t
 ## How to use
 
 1. [Prerequsites](./documentation/Prerequsites.md) [Required].
-2. [How to deploy the Fiware environment](./documentation/HowToUse.md) [Required].
+2. [How to deploy the positioning system environment](./documentation/HowToUse.md) [Required].
 
    ### Demonstration
 

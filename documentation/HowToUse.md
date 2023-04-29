@@ -6,19 +6,33 @@
     sudo sysctl -w vm.max_map_count=262144
     ```
 
-2. Pull docker images
+2. Update the submodules:
+
+    ```console
+    git submodule update --init --recursive
+    ```
+
+3. Update the `PROTOCOL` environmental variable from `AMQP` to `MQTT`:
+
+    ```console
+    cd ./Publisher-Agent
+    nano docker-compose.yml
+    PROTOCOL=MQTT
+    ```
+
+4. Pull docker images
 
     ```console
     ./services create
     ```
 
-3. Deploy containers, add database indexes, create entities, device provisioning and create subscriptions.
+5. Deploy containers, add database indexes, create entities, device provisioning and create subscriptions.
 
     ```console
     ./services start
     ```
 
-4. Stop and remove containers
+6. Stop and remove containers
 
     ```console
     ./services stop

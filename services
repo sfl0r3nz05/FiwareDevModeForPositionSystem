@@ -124,7 +124,7 @@ waitForMongo () {
 
 waitForOrion () {
 	echo -e "\n⏳ Waiting for \033[1;34mOrion\033[0m to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-orion` == "healthy" ]
+	while ! [ `docker inspect --format='{{.State.Health.Status}}' orion` == "healthy" ]
 	do
 	  echo -e "Context Broker HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://localhost:1026/version'` " (waiting for 200)"
 	  sleep 1
@@ -133,14 +133,17 @@ waitForOrion () {
 
 waitForIoTAgent () {
 	echo -e "\n⏳ Waiting for \033[1;34mIoT-Agent\033[0m to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-iot-agent` == "healthy" ]
+	while ! [ `docker inspect --format='{{.State.Health.Status}}' iot-agent` == "healthy" ]
 	do 
 	  echo -e "IoT Agent HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://localhost:4041/version'` " (waiting for 200)"
 	  sleep 1
 	done
 }
 
-
+wait () {
+	echo -e "\n⏳ Waiting for 3 seconds\n"
+	sleep 5
+}
 
 command="$1"
 case "${command}" in
@@ -157,11 +160,12 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over MQTT"
 		echo ""
-		cd ./Publisher-Agent && ${dockerCmd} up -d && cd ..
-		cd ./CSV-Data-Sender && ${dockerCmd} up -d && cd ..
-		${dockerCmd} up -d
+		${dockerCmd} up -d --remove-orphans
 		loadData
 		displayServices
+		cd ./Publisher-Agent && ${dockerCmd} up -d && cd ..
+		wait
+		cd ./CSV-Data-Sender && ${dockerCmd} up -d && cd ..
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		;;
 	"stop")
@@ -172,8 +176,7 @@ case "${command}" in
 		export $(cat .env | grep "#" -v)
 		echo "Pulling Docker images"
 		docker pull curlimages/curl
-		${dockerCmd} pull
-		git submodule update --init --recursive
+		${dockerCmd} pull 
 		;;
 	*)
 		echo "Command not Found."
