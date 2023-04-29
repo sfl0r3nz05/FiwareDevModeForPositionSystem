@@ -80,7 +80,7 @@
 
   - Expected output:
 
-    | ![img](./images/dpkg-1.PNG) | ![img](./images/rootCA-crt.PNG) |
+    | ![img](./images/dpkg-1.png) | ![img](./images/rootCA-crt.png) |
     |---|---|
 
 10. Update installed certificates:
@@ -252,7 +252,7 @@
 
 	- Expected output:
 
-    | ![img](../images/dpkg-1.PNG) | ![img](../images/api-crt.png) |
+    | ![img](./images/dpkg-1.png) | ![img](./images/api-crt.png) |
     |---|---|
 
 22. Install certificates:
