@@ -4,7 +4,7 @@ This is project is an ad-hoc implementation for sending positioning data using t
 
 ## Architecture
 
-![Architecture](https://user-images.githubusercontent.com/6643905/219717119-4f06be5c-e4bc-4eb4-801a-c4c7ec555131.png)
+![Architecture](./documentation/images/Architecture.png)
 
 ## How to use
 
