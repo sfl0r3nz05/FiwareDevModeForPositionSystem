@@ -16,3 +16,4 @@
 /iot-agent/rootCA/openssl.cnf
 /iot-agent/rootCA/rootCA.key 
 /iot-agent/rootCA/rootCA.pem
+/nginx/certs/

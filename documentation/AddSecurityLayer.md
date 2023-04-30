@@ -196,31 +196,31 @@
 16. Create a `certs/` folder:
 
 	```console
-	mkdir -p ~/FiwareDockerDevMode/nginx/certs/
+	mkdir -p ~/FiwareDevModeForPositionSystem/nginx/certs/
 	```
 
 17. Enable specific permission for `certs/` folder`:
 
 	```console
-	sudo chmod 775 -R ~/FiwareDockerDevMode/nginx/certs/
+	sudo chmod 775 -R ~/FiwareDevModeForPositionSystem/nginx/certs/
 	```
 
 18. Copy `api.crt` into `nginx` `cert` folder:
 
 	```console
-	sudo cp api.crt ~/FiwareDockerDevMode/nginx/certs/nginx-selfsigned.crt
+	sudo cp api.crt ~/FiwareDevModeForPositionSystem/nginx/certs/nginx-selfsigned.crt
 	```
 
 19. Copy `api.key` into `nginx` `cert` folder:
 
 	```console
-	sudo cp api.key ~/FiwareDockerDevMode/nginx/certs/nginx-selfsigned.key
+	sudo cp api.key ~/FiwareDevModeForPositionSystem/nginx/certs/nginx-selfsigned.key
 	```
 
 20. Randomly generate `dhparam.pem` file:
 
 	```console
-	cd ~/FiwareDockerDevMode/nginx/certs/
+	cd ~/FiwareDevModeForPositionSystem/nginx/certs/
 	```
 
 	```console
@@ -270,7 +270,7 @@
 24. Introduce the following changes in `nginx.conf`:
 
 	```console
-	cd ~/FiwareDockerDevMode/nginx/
+	cd ~/FiwareDevModeForPositionSystem/nginx/
 	```
 
 	- API-Crate

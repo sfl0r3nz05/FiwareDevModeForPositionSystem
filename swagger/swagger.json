@@ -13,7 +13,7 @@
     ],
     "servers": [
       {
-        "url": "http://10.63.27.39:4430"
+        "url": "https://10.63.27.39:4430"
       }
     ],
     "basePath": "/",
@@ -24,13 +24,37 @@
       }
     ],
     "paths": {
+      "/getTag": {
+        "get": {
+          "tags": [
+            "CrateDB"
+          ],
+          "summary": "Recover the last Tag",
+          "description": "Query to collect the last tag inserted in CrateDB.",
+          "operationId": "getTag",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "201": {
+              "description": "Success"
+            },
+            "401": {
+              "description": "Acceso denegado"
+            },
+            "404": {
+              "description": "service not available"
+            }
+          }
+        }
+      },
       "/getTags": {
         "get": {
           "tags": [
             "CrateDB"
           ],
-          "summary": "Search all the Tags",
-          "description": "All the operations related to the Tag List.",
+          "summary": "Recover all the Tags",
+          "description": "Query to collect all tags inserted in CrateDB.",
           "operationId": "getTags",
           "produces": [
             "application/json"
