@@ -41,7 +41,7 @@ curl -s -o /dev/null -X POST \
                 {
                     "object_id": "timestamp",
                     "name": "timestamp",
-                    "type": "Text",
+                    "type": "DateTime",
                     "metadata": {
                         "unitCode": {
                             "type": "text",
