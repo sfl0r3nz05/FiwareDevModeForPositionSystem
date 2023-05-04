@@ -18,7 +18,4 @@ This is project is an ad-hoc implementation for sending positioning data using t
 
 ## To Do
 
-1. Create an unsecure branch
-2. Create a secure branch
-3. Create more endpoints for the API
-4. Create a production repository based on Kubernetes
+1. Create a full secure branch
