@@ -3,7 +3,7 @@
 1. Access to `provision` folder once the respository has been cloned:
 
     ```console
-    cd ~/FiwareDockerDevMode/provision/
+    cd ~/FiwareDevModeForPositionSystem/provision/
     ```
 
 2. Create and copy the certificates using `ssl.sh` script from services names like api. E.g.:
