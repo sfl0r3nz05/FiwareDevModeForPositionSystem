@@ -1,6 +1,0 @@
-[submodule "CSV-Data-Sender"]
-	path = CSV-Data-Sender
-	url = https://github.com/sfl0r3nz05/CSV-Data-Sender.git
-[submodule "Publisher-Agent"]
-	path = Publisher-Agent
-	url = https://github.com/sfl0r3nz05/Publisher-Agent.git
