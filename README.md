@@ -12,13 +12,12 @@ This is project is an ad-hoc implementation for sending positioning data using t
 
 ## How to use
 
-1. [Prerequsites](./documentation/Prerequsites.md) [Required].
-2. [Add security features](./documentation/AddSecurityLayer.md).
-3. [How to deploy the positioning system environment](./documentation/HowToUse.md) [Required].
+1. [Prerequsites](./documentation/Prerequsites.md).
+2. [How to deploy the architecture components](./documentation/HowToUse.md).
 
-   ### Demonstration
+### Demonstration
 
-   - [Demonstration of sending data to the next information flow: SDG -> Publisher Agent MQTT -> Fiware](https://youtu.be/gJ2BJ4i7nQw)
+- [Demonstration of sending data to the next information flow: SDG -> Publisher Agent MQTT -> Fiware](https://youtu.be/gJ2BJ4i7nQw)
 
 ## To Do
 

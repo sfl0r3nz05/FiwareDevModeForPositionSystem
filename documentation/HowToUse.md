@@ -1,18 +1,26 @@
 # How to Deploy
 
-1. Increase CrateDB virtual Memory
+1. Access to `provision` folder once the respository has been cloned:
+
+    ```console
+    cd ~/FiwareDockerDevMode/provision/
+    ```
+
+2. Create and copy the certificates using `ssl.sh` script from services names like api. E.g.:
+
+    > Details of the script have been documented in [Security Layer](./AddSecurityLayer.md)
+
+    ```console
+    ./ssl.sh api
+    ```
+
+3. Increase CrateDB virtual Memory
 
     ```console
     sudo sysctl -w vm.max_map_count=262144
     ```
 
-2. Update the submodules:
-
-    ```console
-    git submodule update --init --recursive
-    ```
-
-3. Update the `PROTOCOL` environmental variable from `AMQP` to `MQTT`:
+4. Update the `PROTOCOL` environmental variable from `AMQP` to `MQTT`:
 
     ```console
     cd ./Publisher-Agent
@@ -20,19 +28,19 @@
     PROTOCOL=MQTT
     ```
 
-4. Pull docker images
+5. Pull docker images
 
     ```console
     ./services create
     ```
 
-5. Deploy containers, add database indexes, create entities, device provisioning and create subscriptions.
+6. Deploy containers, add database indexes, create entities, device provisioning and create subscriptions.
 
     ```console
     ./services start
     ```
 
-6. Stop and remove containers
+7. Stop and remove containers
 
     ```console
     ./services stop

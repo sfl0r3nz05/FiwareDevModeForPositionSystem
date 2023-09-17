@@ -13,7 +13,8 @@
     ],
     "servers": [
       {
-        "url": "https://10.63.27.39:4430"
+        "url": "http://api-crate:8080",
+        "description": "api-crate"
       }
     ],
     "basePath": "/",

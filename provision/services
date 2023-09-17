@@ -1,18 +1,4 @@
 #!/bin/bash
-#
-#  Command Line Interface to start all services associated with the Tutorial
-#
-#  For this tutorial the commands are merely a convenience script to run docker or docker-compose
-#
-#  Each services script can be run using either docker-compose (the external tool with the hyphen -) 
-#  or docker compose (the newer version directly bundled with Docker with a space )
-#
-#  if you start up with the following command:
-#
-#  ./services start legacy
-#
-# This will force the script to use docker-compose which may be more reliable in 
-# some cases (or if an older version of Docker is being used)
 
 set -e
 
@@ -31,22 +17,22 @@ loadData () {
 	waitForMongo
 	addDatabaseIndex
 	waitForOrion
-	docker run --rm -v $(pwd)/import-entities:/import-entities \
+	docker run --rm -v $(pwd)/import-entities:/home/curl_user/import-entities \
 		--network fiware_default \
 		-e ORION_PORT="${ORION_PORT}" \
 		--entrypoint /bin/ash curlimages/curl import-entities
 	waitForIoTAgent
-	docker run --rm -v $(pwd)/provision-services:/provision-services \
+	docker run --rm -v $(pwd)/provision-services:/home/curl_user/provision-services \
 		--network fiware_default \
 		-e ORION_PORT="${ORION_PORT}" \
 		-e IOTA_NORTH_PORT="${IOTA_NORTH_PORT}" \
 		--entrypoint /bin/ash curlimages/curl provision-services
-	docker run --rm -v $(pwd)/provision-devices:/provision-devices \
+	docker run --rm -v $(pwd)/provision-devices:/home/curl_user/provision-devices \
 		--network fiware_default \
 		-e ORION_PORT="${ORION_PORT}" \
 		-e IOTA_NORTH_PORT="${IOTA_NORTH_PORT}" \
 		--entrypoint /bin/ash curlimages/curl provision-devices
-	docker run --rm -v $(pwd)/subscription-entities:/subscription-entities \
+	docker run --rm -v $(pwd)/subscription-entities:/home/curl_user/subscription-entities \
 		--network fiware_default \
 		-e ORION_PORT="${ORION_PORT}" \
 		-e QUANTUMLEAP_PORT="${QUANTUMLEAP_PORT}" \
@@ -72,6 +58,12 @@ stoppingContainers () {
 			echo "Removing tutorial networks"
 			docker network rm $NETWORKS || true
 		fi
+
+	docker rmi -f fiware-publisher-agent
+	docker rmi -f fiware-synthetic-data-generator-file
+	docker rmi -f fiware-api-crate
+	docker rmi -f fiware/iotagent-json  
+	docker rmi -f fiware/orion
 }
 
 displayServices () {
@@ -145,13 +137,81 @@ wait () {
 	sleep 7
 }
 
+updateServices () {
+	# Install swagger service
+	INTERFACE=$(ip route | grep default | awk '{print $5}')
+	HOST=$(ip addr show "$INTERFACE" | grep -oP 'inet \K[\d.]+')
+
+	URL_1="http://api-crate:8080"
+	NEW_URL_1="https://$HOST:4430"
+	YAML_FILE="../swagger/swagger.json"
+
+	sed -i "s|$URL_1|$NEW_URL_1|g" "$YAML_FILE"
+}
+
+removeCert () {
+	rm -rf certs/
+	rm -rf ../nginx/certs/
+	rm -rf ../mosquitto/mosquitto.crt
+	rm -rf ../mosquitto/mosquitto.key
+	rm -rf ../mosquitto/rootCA.crt
+	rm -rf ../iotagent-json/
+	rm -rf ../api-dev-mng/certs/
+
+	sudo rm -rf /usr/local/share/ca-certificates/api.crt
+	sudo rm -rf /usr/local/share/ca-certificates/rootCA.crt
+	sudo rm -rf /usr/local/share/ca-certificates/mosquitto.crt
+	sudo rm -rf /usr/local/share/ca-certificates/mqtt-client-1.crt
+	sudo rm -rf /usr/local/share/ca-certificates/iotagent-json.crt
+	sudo update-ca-certificates
+
+	# Install swagger service
+	INTERFACE=$(ip route | grep default | awk '{print $5}')
+	HOST=$(ip addr show "$INTERFACE" | grep -oP 'inet \K[\d.]+')
+	
+	NEW_URL_1="http://api-crate:8080"
+	URL_1="https://$HOST:4430"
+	NEW_URL_2="http://api-orion:8090"
+	URL_2="https://$HOST:4431"
+	YAML_FILE="../swagger/swagger.json"
+
+	sed -i "s|$URL_1|$NEW_URL_1|g" "$YAML_FILE"
+	sed -i "s|$URL_2|$NEW_URL_2|g" "$YAML_FILE"
+
+	# Reset docker-compose IP_ADDRESS environment in service api-dev-mng
+	INTERFACE=$(ip route | grep default | awk '{print $5}')
+	HOST=$(ip addr show "$INTERFACE" | grep -oP 'inet \K[\d.]+')
+	
+	NEW_ENV_1="IP_ADDRESS=127.0.0.1"
+	ENV_1="IP_ADDRESS=$HOST"
+	YAML_FILE="../docker-compose.yml"
+
+	sed -i "s|$ENV_1|$NEW_ENV_1|g" "$YAML_FILE"
+
+	# Reset docker-compose COMMON_NAME environment in service api-dev-mng
+	HOSTNAME=$(hostname)
+	
+	ENV_2="COMMON_NAME=$HOSTNAME"
+	NEW_ENV_2="COMMON_NAME=default"
+	YAML_FILE="../docker-compose.yml"
+
+	sed -i "s|$ENV_2|$NEW_ENV_2|g" "$YAML_FILE"
+}
+
 command="$1"
 case "${command}" in
 	"help")
         echo "usage: services [create|start|stop]"
         ;;
+	"create")
+		export $(cat ../env | grep "#" -v)
+		echo "Pulling Docker images"
+		docker pull curlimages/curl
+		${dockerCmd} pull
+		updateServices
+		;;
 	 "start")
-		export $(cat .env | grep "#" -v)
+		export $(cat ../env | grep "#" -v)
 		stoppingContainers
 		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mQuantumLeap\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m, a \033[1mGrafana\033[0m metrics dashboard, \033[1mCrateDB\033[0m and \033[1mMongoDB\033[0m databases and a \033[1mRedis\033[0m cache."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
@@ -169,14 +229,9 @@ case "${command}" in
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		;;
 	"stop")
-		export $(cat .env | grep "#" -v)
+		export $(cat ../env | grep "#" -v)
 		stoppingContainers
-		;;
-	"create")
-		export $(cat .env | grep "#" -v)
-		echo "Pulling Docker images"
-		docker pull curlimages/curl
-		${dockerCmd} pull 
+		removeCert
 		;;
 	*)
 		echo "Command not Found."

@@ -2,6 +2,40 @@ version: "3.8"
 
 services:
 
+  publisher-agent:
+    container_name: publisher
+    hostname: publisher
+    build:
+      context: publisher-agent/.
+    depends_on:
+      - swagger
+    volumes:
+      - ./publisher-agent/src:/publisher-agent/src
+    environment:
+      - SLEEP_TIME=0
+      - PROTOCOL=MQTT # Must be set to AMQP or MQTT
+      - AMQP_QUEUE_HOST=rmq0
+      - AMQP_QUEUE_PORT=5672
+      - MQTT_QUEUE_HOST=mosquitto
+      - MQTT_QUEUE_PORT=1883
+      - TOPIC=/5jggokgpepnvsb2uv4s40d59ov/tag001/attrs
+    ports:
+      - 8053:8053
+
+  synthetic-data-generator-file:
+    container_name: csv-data-sender
+    hostname: csv-data-sender
+    build:
+      context: synthetic-data-generator/.
+    depends_on:
+      - publisher-agent
+    volumes:
+      - ./synthetic-data-generator:/synthetic-data-generator
+    environment:
+      - SOCK_LISTENER_HOST=publisher
+      - SOCK_LISTENER_PORT=8053
+      - SLEEP_TIME=0.9
+
   mosquitto:
     image: eclipse-mosquitto:1.6.14
     hostname: mosquitto
@@ -128,7 +162,6 @@ services:
   api-crate:
     hostname: api-crate
     container_name: api-crate
-    #image: sflorenz05/api-python-cratedb:v0.1
     build:
       context: api-crate/.
     depends_on:
@@ -138,7 +171,7 @@ services:
     ports:
       - "8080:8080"
     volumes: 
-      - ${PWD}/api-crate:/app
+      - ./api-crate:/app
 
   nginx:
     image: nginx:1.18.0
@@ -148,8 +181,8 @@ services:
     ports:
       - "4430:8080"
     volumes: 
-      - ${PWD}/nginx/certs:/certs
-      - ${PWD}/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/certs:/certs
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     restart: unless-stopped
 
   swagger:
