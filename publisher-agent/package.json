@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/DataReciever.js"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "prom-client": "14.0.1",
+    "amqplib": "^0.8.0",
+    "dgram": "^1.0.1",
+    "mqtt": "^4.3.7"
+  }
+}
