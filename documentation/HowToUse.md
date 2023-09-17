@@ -11,7 +11,7 @@
     > Details of the script have been documented in [Security Layer](./AddSecurityLayer.md)
 
     ```console
-    ./ssl.sh api
+    ./ssh.sh api
     ```
 
 3. Increase CrateDB virtual Memory

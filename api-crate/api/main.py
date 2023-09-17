@@ -113,6 +113,9 @@ class GetTagList(GetTagResource):
         else:
             return self.not_found(id=id)
 
+@app.route('/', methods=['GET'])
+def goToSwagger():
+    return 'Please, use swagger to test the API', 201
 
 @app.errorhandler(404)
 def not_found(error):

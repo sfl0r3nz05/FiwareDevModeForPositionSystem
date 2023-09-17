@@ -152,17 +152,9 @@ updateServices () {
 removeCert () {
 	rm -rf certs/
 	rm -rf ../nginx/certs/
-	rm -rf ../mosquitto/mosquitto.crt
-	rm -rf ../mosquitto/mosquitto.key
-	rm -rf ../mosquitto/rootCA.crt
-	rm -rf ../iotagent-json/
-	rm -rf ../api-dev-mng/certs/
 
 	sudo rm -rf /usr/local/share/ca-certificates/api.crt
 	sudo rm -rf /usr/local/share/ca-certificates/rootCA.crt
-	sudo rm -rf /usr/local/share/ca-certificates/mosquitto.crt
-	sudo rm -rf /usr/local/share/ca-certificates/mqtt-client-1.crt
-	sudo rm -rf /usr/local/share/ca-certificates/iotagent-json.crt
 	sudo update-ca-certificates
 
 	# Install swagger service
@@ -171,31 +163,9 @@ removeCert () {
 	
 	NEW_URL_1="http://api-crate:8080"
 	URL_1="https://$HOST:4430"
-	NEW_URL_2="http://api-orion:8090"
-	URL_2="https://$HOST:4431"
 	YAML_FILE="../swagger/swagger.json"
 
 	sed -i "s|$URL_1|$NEW_URL_1|g" "$YAML_FILE"
-	sed -i "s|$URL_2|$NEW_URL_2|g" "$YAML_FILE"
-
-	# Reset docker-compose IP_ADDRESS environment in service api-dev-mng
-	INTERFACE=$(ip route | grep default | awk '{print $5}')
-	HOST=$(ip addr show "$INTERFACE" | grep -oP 'inet \K[\d.]+')
-	
-	NEW_ENV_1="IP_ADDRESS=127.0.0.1"
-	ENV_1="IP_ADDRESS=$HOST"
-	YAML_FILE="../docker-compose.yml"
-
-	sed -i "s|$ENV_1|$NEW_ENV_1|g" "$YAML_FILE"
-
-	# Reset docker-compose COMMON_NAME environment in service api-dev-mng
-	HOSTNAME=$(hostname)
-	
-	ENV_2="COMMON_NAME=$HOSTNAME"
-	NEW_ENV_2="COMMON_NAME=default"
-	YAML_FILE="../docker-compose.yml"
-
-	sed -i "s|$ENV_2|$NEW_ENV_2|g" "$YAML_FILE"
 }
 
 command="$1"
@@ -204,14 +174,14 @@ case "${command}" in
         echo "usage: services [create|start|stop]"
         ;;
 	"create")
-		export $(cat ../env | grep "#" -v)
+		export $(cat ../.env | grep "#" -v)
 		echo "Pulling Docker images"
 		docker pull curlimages/curl
 		${dockerCmd} pull
 		updateServices
 		;;
 	 "start")
-		export $(cat ../env | grep "#" -v)
+		export $(cat ../.env | grep "#" -v)
 		stoppingContainers
 		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mQuantumLeap\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m, a \033[1mGrafana\033[0m metrics dashboard, \033[1mCrateDB\033[0m and \033[1mMongoDB\033[0m databases and a \033[1mRedis\033[0m cache."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
@@ -223,13 +193,10 @@ case "${command}" in
 		${dockerCmd} up -d --remove-orphans
 		loadData
 		displayServices
-		cd ./Publisher-Agent && ${dockerCmd} up -d && cd ..
-		wait
-		cd ./CSV-Data-Sender && ${dockerCmd} up -d && cd ..
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		;;
 	"stop")
-		export $(cat ../env | grep "#" -v)
+		export $(cat ../.env | grep "#" -v)
 		stoppingContainers
 		removeCert
 		;;
