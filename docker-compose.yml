@@ -3,12 +3,10 @@ version: "3.8"
 services:
 
   publisher-agent:
-    container_name: publisher
-    hostname: publisher
+    container_name: publisher-agent
+    hostname: publisher-agent
     build:
       context: publisher-agent/.
-    depends_on:
-      - swagger
     volumes:
       - ./publisher-agent/src:/publisher-agent/src
     environment:
@@ -34,7 +32,7 @@ services:
     volumes:
       - ./synthetic-data-generator:/synthetic-data-generator
     environment:
-      - SOCK_LISTENER_HOST=publisher
+      - SOCK_LISTENER_HOST=publisher-agent
       - SOCK_LISTENER_PORT=8053
       - SLEEP_TIME=0.9
     networks:
