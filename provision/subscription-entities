@@ -22,7 +22,7 @@ curl -s -o /dev/null -X POST \
     "subject": {
       "entities": [
         {
-          "idPattern": "urn:ngsi-ld:Tag:001"
+          "idPattern": "urn:ngsi-ld:Tag:*"
         }
       ],
       "condition": {
@@ -32,10 +32,7 @@ curl -s -o /dev/null -X POST \
     "notification": {
       "http": {"url": "http://quantumleap:'$QUANTUMLEAP_PORT'/v2/notify"},
       "attrs": [ "ID_mensaje", "timestamp", "tagID", "x", "y", "z", "hpl_1", "vpl", "SingularMatrix", "AlarmType" ],
-      "metadata": [
-        "dateCreated",
-        "dateModified"
-      ]
+      "metadata": [ "dateCreated", "dateModified"]
     },
     "throttling": 1
   }'

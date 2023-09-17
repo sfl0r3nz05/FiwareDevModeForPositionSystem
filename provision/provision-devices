@@ -14,7 +14,7 @@ printf "⏳ Provisioning IoT devices "
 #
 
 curl -s -o /dev/null -X POST \
-  "http://iot-agent:$IOTA_NORTH_PORT/iot/devices" \
+  "http://iotagent-json:$IOTA_NORTH_PORT/iot/devices" \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
