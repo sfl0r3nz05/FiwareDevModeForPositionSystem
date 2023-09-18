@@ -9,7 +9,7 @@
   },
   "servers": [
     {
-      "url": "http://10.63.27.35:4430",
+      "url": "http://api-crate:8080",
       "description": "api-crate"
     }
   ],
@@ -65,7 +65,7 @@
             "allowReserved": true,
             "schema": {
               "type": "string",
-              "default": "org1"
+              "default": "openiot"
             }
           },
           {
@@ -76,7 +76,7 @@
             "allowReserved": true,
             "schema": {
               "type": "string",
-              "default": "agv"
+              "default": "tag"
             }
           }
         ], 
@@ -118,7 +118,7 @@
             "allowReserved": true,
             "schema": {
               "type": "string",
-              "default": "org1"
+              "default": "openiot"
             }
           },
           {
@@ -129,7 +129,7 @@
             "allowReserved": true,
             "schema": {
               "type": "string",
-              "default": "agv"
+              "default": "tag"
             }
           }
         ],
