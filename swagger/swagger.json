@@ -1,79 +1,162 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "description": "This is a REST API for the NONDAGO-GEOGRAMA project",
-      "title": "NONDAGO-GEOGRAMA API REST",
-      "contact": {
-        "email": "sfigueroa@ceit.es"
-      }
-    },
-    "schemes": [
-      "http",
-      "https"
-    ],
-    "servers": [
-      {
-        "url": "http://api-crate:8080",
-        "description": "api-crate"
-      }
-    ],
-    "basePath": "/",
-    "tags": [
-      {
-        "name": "CrateDB",
-        "description": "Tag created to test the API Crate that query CrateDB Timeserie Database."
-      }
-    ],
-    "paths": {
-      "/getTag": {
-        "get": {
-          "tags": [
-            "CrateDB"
-          ],
-          "summary": "Recover the last Tag",
-          "description": "Query to collect the last tag inserted in CrateDB.",
-          "operationId": "getTag",
-          "produces": [
-            "application/json"
-          ],
-          "responses": {
-            "201": {
-              "description": "Success"
-            },
-            "401": {
-              "description": "Acceso denegado"
-            },
-            "404": {
-              "description": "service not available"
-            }
-          }
-        }
-      },
-      "/getTags": {
-        "get": {
-          "tags": [
-            "CrateDB"
-          ],
-          "summary": "Recover all the Tags",
-          "description": "Query to collect all tags inserted in CrateDB.",
-          "operationId": "getTags",
-          "produces": [
-            "application/json"
-          ],
-          "responses": {
-            "201": {
-              "description": "Success"
-            },
-            "401": {
-              "description": "Acceso denegado"
-            },
-            "404": {
-              "description": "service not available"
-            }
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is a REST API for the NONDAGO-GEOGRAMA project",
+    "title": "NONDAGO-GEOGRAMA API REST",
+    "contact": {
+      "email": "sfigueroa@ceit.es"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://10.63.27.35:4430",
+      "description": "api-crate"
+    }
+  ],
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "CrateDB",
+      "description": "Tag created to test the API Crate that query CrateDB Timeserie Database."
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "paths": {
+    "/identity/v0.1/auth/tokens": {
+      "get": {
+        "tags": [
+          "CrateDB"
+        ],
+        "summary": "Get Authorization Token",
+        "description": "Get Authorization Token",
+        "operationId": "token",
+        "responses": {
+          "201": {
+            "description": "Created Token."
+          },
+          "400": {
+            "description": "Invalid input"
           }
         }
       }
+    },  
+    "/lastState/v0.2/{org}/{dev}": {
+      "get": {
+        "security": [
+          {
+             "bearerAuth": []
+          }
+       ],
+        "tags": [
+          "CrateDB"
+        ],
+        "summary": "Get the last state of an existing device",
+        "description": "Select between different organizations, e.g.: org1, org2, org3 ... and devices, e.g.: agv, arm, robotarm, plc.",
+        "operationId": "lastState",
+        "parameters": [
+          {
+            "name": "org",
+            "in": "path",
+            "description": "Org ID.",
+            "required": true,
+            "allowReserved": true,
+            "schema": {
+              "type": "string",
+              "default": "org1"
+            }
+          },
+          {
+            "name": "dev",
+            "in": "path",
+            "description": "Dev ID.",
+            "required": true,
+            "allowReserved": true,
+            "schema": {
+              "type": "string",
+              "default": "agv"
+            }
+          }
+        ], 
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "service not available"
+          }
+        }
+      }
     },
-    "definitions": {
-    }    
-  } 
+    "/allStates/v0.2/{org}/{dev}": {
+      "get": {
+        "security": [
+          {
+             "bearerAuth": []
+          }
+       ],
+        "tags": [
+          "CrateDB"
+        ],
+        "summary": "Get all states of an existing device",
+        "description": "Select between different organizations, e.g.: org1, org2, org3 ... and devices, e.g.: agv, arm, robotarm, plc.",
+        "operationId": "allState",
+        "parameters": [
+          {
+            "name": "org",
+            "in": "path",
+            "description": "Org ID.",
+            "required": true,
+            "allowReserved": true,
+            "schema": {
+              "type": "string",
+              "default": "org1"
+            }
+          },
+          {
+            "name": "dev",
+            "in": "path",
+            "description": "Dev ID.",
+            "required": true,
+            "allowReserved": true,
+            "schema": {
+              "type": "string",
+              "default": "agv"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "service not available"
+          }
+        }
+      }
+    }
+  },
+  "components": {        
+  "securitySchemes": {
+    "bearerAuth": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT"
+    }
+  }
+}
+}

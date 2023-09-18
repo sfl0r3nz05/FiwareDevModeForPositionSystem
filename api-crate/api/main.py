@@ -1,131 +1,101 @@
-import os
-import uuid
-import base64
-import hashlib
-
-from datetime import datetime
-from tempfile import TemporaryFile
-
-from urllib.request import urlopen, Request
-from urllib.error import HTTPError, URLError
-
-from crate.client import connect
-
-from flask import (
-    Flask,
-    g as app_globals,
-    make_response,
-    jsonify
-)
-
-from flask_restful import Api, Resource
-from flask_restful import reqparse as reqparser
+import jwt
+from functools import wraps
 from flask_cors import CORS
+from models.device import Device
+import database.mongo as dbase_mongo
+import database.crate as dbase_crate
+from datetime import datetime, timedelta
+from flask import Flask, jsonify, request, make_response
+
+
+db_crate = dbase_crate.dbConnection()
+cursor = db_crate.cursor()
 
 app = Flask(__name__)
-api = Api(app)
-cors = CORS(app)
-
-# app configuration
-CRATE_HOST = os.environ['CRATE_HOST_PORT']
-MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5mb because GIFs are big ;)
-
-# create Flask app
-app = Flask(__name__)
+app.config['SECRET_KEY']= 'thisisthesecretkey'
 app.config.from_object(__name__)
 # apply CORS headers to all responses
 CORS(app)
 
-class CrateResource(Resource):
 
-    __name__ = ''
-    __table__ = ''
-
-    def __init__(self):
-        super(CrateResource, self).__init__()
-        self.cursor = self.connection.cursor()
-
-    @property
-    def connection(self):
-        if not 'conn' in app_globals:
-            app_globals.conn = connect(app.config['CRATE_HOST'],
-                                       error_trace=True)
-        return app_globals.conn
-
-    def error(self, message, status=404):
-        return (dict(
-            error=message,
-            status=status,
-        ), status)
-
-    def refresh_table(self):
-        self.cursor.execute("REFRESH TABLE {}".format(self.__table__))
-
-    def convert(self, description, results):
-        cols = [c[0] for c in description]
-        return [dict(zip(cols, r)) for r in results]
-
-    def not_found(self, **kw):
-        keys = ', '.join(('{}="{}"'.format(k,v) for k,v in kw.items()))
-        return self.error('{} with {} not found'.format(self.__name__, keys), 404)
-
-    def argument_required(self, argument):
-        return self.error('Argument "{}" is required'.format(argument), 400)
-
-
-class GetTagResource(CrateResource):
-
-    __name__ = 'GetTagList'
-    __table__ = 'mtopeniot.ettag'
-
-class GetTag(GetTagResource):
+def token_required(f):
     """
-    Resource for mtopeniot.ettag
-    Supported methods: GET
+    Decorator to require JWT token
     """
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if request.method == 'OPTIONS':
+            return jsonify({}), 204
+        
+        if 'Authorization' not in request.headers or not request.headers['Authorization'].startswith('Bearer '):
+            return jsonify({'error': 'Missing authorization header'}), 401
+    
+        token = request.headers['Authorization'].split(' ')[1]
+        try:
+            payload = jwt.decode(token,
+                             app.config['SECRET_KEY'])
+        except jwt.ExpiredSignatureError:
+            return jsonify({'error': 'Invalid token'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'error': 'Invalid token'}), 401
+        except Exception as ex:
+            print(ex)
+            return jsonify({'error': 'Invalid token'}), 401
+        return f(*args, **kwargs)
 
-    def get(self):
-        id = str(uuid.uuid1())
+    return decorated
 
-        self.cursor.execute("SELECT * FROM mtopeniot.ettag ORDER BY time_index DESC LIMIT 1")
-        response = self.convert(self.cursor.description,
-                                self.cursor.fetchall())
-        if self.cursor.rowcount > 0:
-            return response, 200
-        else:
-            return self.not_found(id=id)
-
-
-class GetTagList(GetTagResource):
-    """
-    Resource for mtopeniot.ettag
-    Supported methods: GET
-    """
-
-    def get(self):
-        id = str(uuid.uuid1())
-
-        self.cursor.execute("SELECT * FROM mtopeniot.ettag")
-        response = self.convert(self.cursor.description,
-                                self.cursor.fetchall())
-        if self.cursor.rowcount > 0:
-            return response, 200
-        else:
-            return self.not_found(id=id)
+@app.route('/identity/v0.1/auth/tokens')
+def login():
+    host = request.host
+    
+    if host:
+        token = jwt.encode({'host' : host, 'exp' : datetime.utcnow() + timedelta(minutes=30)}, app.config['SECRET_KEY'])
+        return make_response(jsonify({'token' : token.decode("utf-8")}), 201)
+    
+    return make_response('Could not verify!', 401, {'WWW-Authenticate' : 'Basic realm="Login Required"'})
 
 @app.route('/', methods=['GET'])
 def goToSwagger():
     return 'Please, use swagger to test the API', 201
 
-@app.errorhandler(404)
-def not_found(error):
-    return jsonify({'error': 'Not found'}), 404
+@app.route('/lastState/v0.2/<string:org>/<string:dev>', methods=['GET'])
+@token_required
+def getLastState(org, dev):
+    query = f"SELECT * FROM mt{org}.et{dev} ORDER BY time_index DESC LIMIT 1"
+    cursor.execute(query)
+    data = cursor.fetchone()
+    if data:
+        # Get the column names from the cursor description
+        column_names = [column[0] for column in cursor.description]
+        # Create a dictionary to store the fetched data with column names as keys
+        data_dict = {column_names[i]: data[i] for i in range(len(column_names))}
 
-def run():
-    api = Api(app)
-    api.add_resource(GetTag, '/getTag')
-    api.add_resource(GetTagList, '/getTags')
-    app.run(host='0.0.0.0', port=8080, debug=True) #, ssl_context='adhoc'
+    if data_dict:
+        return jsonify(data_dict), 200
+    else:
+        return 'Content-Type not supported!'
+    
+@app.route('/allStates/v0.2/<string:org>/<string:dev>', methods=['GET'])
+@token_required
+def getAllStates(org, dev):
+    query = f"SELECT * FROM mt{org}.et{dev}"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    if data:
+        # Get the column names from the cursor description
+        column_names = [column[0] for column in cursor.description]
+        
+        # Create a list of dictionaries to store the fetched data with column names as keys
+        data_list = []
+        for row in data:
+            data_dict = {column_names[i]: row[i] for i in range(len(column_names))}
+            data_list.append(data_dict)
+    
+    if data_list:
+        return jsonify(data_list), 200
+    else:
+        return 'Content-Type not supported!'
 
 if __name__ == '__main__':
-    run()
+    app.run(host="0.0.0.0", port=8080, debug=True)

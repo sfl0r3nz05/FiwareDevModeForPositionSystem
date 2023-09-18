@@ -1,6 +1,8 @@
 flask
-flask_restful
+Flask-RESTful==0.3.8
 flask-cors
+PyJWT==1.7.1
 crash
 crate
 pyopenssl
+pymongo [srv]

@@ -17,3 +17,5 @@
 /iot-agent/rootCA/rootCA.key 
 /iot-agent/rootCA/rootCA.pem
 /nginx/certs/
+/api-crate/api/models/__pycache__
+/api-crate/api/database/__pycache__

@@ -180,10 +180,12 @@ services:
     container_name: api-crate
     build:
       context: api-crate/.
+    restart: always
     depends_on:
         - crate-db
     environment:
       - CRATE_HOST_PORT=crate-db:4200
+      - MONGODB_URI=mongodb://mongo-d
     ports:
       - "8080:8080"
     volumes: 
